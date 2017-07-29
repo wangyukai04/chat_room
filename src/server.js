@@ -42,7 +42,11 @@ io.on("connection",function (socket) {
                     content:msg,
                     createAt:new Date()
                 },function (err, message) {
-                    io.emit("message",{author:username,content:msg,createAt:new Date()});
+                    if(currentRoom){
+                        io.in(currentRoom).emit("message",message);
+                    }else{
+                        io.emit("message",{author:username,content:msg,createAt:new Date()});
+                    }
                 });
             }
 
