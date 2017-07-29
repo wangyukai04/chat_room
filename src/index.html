@@ -72,8 +72,6 @@
     /*
     * 引入上面路径以后 会在windows上多一个io 属性
     * */
-
-
     let textMsg = document.querySelector("#textMsg");
     let msgList = document.querySelector(".list-group");
     let moveList = document.querySelector("#moveList");
@@ -97,7 +95,7 @@
         messages.reverse();
         msgList.innerHTML = messages.map(item=>(
             `<li class="list-group-item">${formatUser(item)}</li>`
-        )).join("");
+        )).join("") + msgList.innerHTML;
     });
     function formatUser(msg) {
         return `<span class="author">${msg.author}</span>:${msg.content}<span class="pull-right">${new Date(msg.createAt).toLocaleString()}</span>`
