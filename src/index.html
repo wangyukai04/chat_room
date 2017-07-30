@@ -58,7 +58,7 @@
                                 <input required id="textMsg" type="text" class="form-control">
                             </div>
                             <div class="col-md-2">
-                                <input type="submit" class="btn btn-primary">
+                                <input id="subBtn" type="submit" class="btn btn-primary">
                             </div>
                         </div>
                     </form>
@@ -72,20 +72,23 @@
     /*
     * 引入上面路径以后 会在windows上多一个io 属性
     * */
-    let textMsg = document.querySelector("#textMsg");
-    let msgList = document.querySelector(".list-group");
-    let moveList = document.querySelector("#moveList");
-    let socket = io();
+    var textMsg = document.getElementById("textMsg");
+    var msgList = document.getElementsByClassName("list-group")[0];
+    var moveList = document.getElementById("moveList");
+    var subBtn = document.getElementById("subBtn");
+    /*subBtn.addEventListener("click",function (e) {
+        console.log(e);
+    });*/
+    var socket = io();
     socket.on("connect",function () {
-
-
+        console.log("connect success");
     });
     socket.emit("getAllMessages");
     socket.on("message",function (msg) {
-        let li = document.createElement("li");
+        var li = document.createElement("li");
         li.innerHTML = formatUser(msg);
         li.className = "list-group-item";
-        let ele = document.createElement("div");
+        var ele = document.createElement("div");
         ele.className = "move";
         ele.innerHTML = msg.content;
         move(ele);
@@ -93,25 +96,25 @@
     });
     socket.on("allMessages",function (messages) {
         messages.reverse();
-        msgList.innerHTML = messages.map(item=>(
-            `<li class="list-group-item">${formatUser(item)}</li>`
-        )).join("") + msgList.innerHTML;
+        msgList.innerHTML = messages.map(function (item){return(
+            '<li class="list-group-item">' +formatUser(item) + '</li>'
+        )}).join("") + msgList.innerHTML;
     });
     function formatUser(msg) {
-        return `<span class="author">${msg.author}</span>:${msg.content}<span class="pull-right">${new Date(msg.createAt).toLocaleString()}</span>`
+        return '<span class="author">' + msg.author + '</span>:' + msg.content + '<span class="pull-right">' + new Date(msg.createAt).toLocaleString() + '</span>';
     }
 
     function send(event) {
         event.preventDefault();
-        let msg = textMsg.value;
+        var msg = textMsg.value;
         socket.send(msg);
         textMsg.value = ""
     }
     function move(ele) {
         moveList.appendChild(ele);
-        let left = document.body.clientWidth;
+        var left = document.body.clientWidth;
         ele.style.top =  getRandom() + "%";
-        let timer = setInterval(function () {
+        var timer = setInterval(function () {
             ele.style.left = left-- + "px";
             if(left<-1000) {
                 clearInterval(timer);
@@ -124,8 +127,8 @@
     }
     function chat(event) {
         if(event.target.className === "author"){
-            let author = event.target.innerText;
-            textMsg.value = `@${author} `
+            var author = event.target.innerText;
+            textMsg.value = '@' + author + " ";
         }
     }
     function join(roomName) {
